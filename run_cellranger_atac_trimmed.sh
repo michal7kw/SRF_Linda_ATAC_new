@@ -1,14 +1,14 @@
 #!/bin/bash
-#SBATCH --job-name=cellranger_atac_trimmed
-#SBATCH --output=logs/cellranger_atac_trimmed_%A_%a.out
-#SBATCH --error=logs/cellranger_atac_trimmed_%A_%a.err
+#SBATCH --job-name=cellranger_arc_trimmed
+#SBATCH --output=logs/cellranger_arc_trimmed_%A_%a.out
+#SBATCH --error=logs/cellranger_arc_trimmed_%A_%a.err
 #SBATCH --array=0-1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=128G
 #SBATCH --time=120:00:00
 #SBATCH --partition=workq
 
-# CellRanger ATAC Processing Script for Trimmed ARC-v1 Chemistry Data
+# CellRanger ATAC Processing Script for Trimmed ARC-v1 Chemistry Data (ATAC-only)
 
 set -euo pipefail
 
@@ -31,21 +31,22 @@ trap cleanup EXIT
 export CELLRANGER_COPY_MODE=copy
 export CELLRANGER_USE_HARDLINKS=false
 
-# Configuration
+# Configuration - Use CellRanger ATAC for ATAC-only ARC-v1 chemistry data
 CELLRANGER_ATAC="/beegfs/scratch/ric.sessa/kubacki.michal/tools/cellranger-atac-2.2.0/cellranger-atac"
 REF="/beegfs/scratch/ric.sessa/kubacki.michal/COMMONS/refdata-cellranger-arc-GRCm39-2024-A"
 # Get absolute path for data directory to avoid broken symlinks when changing directories
-BASE_DIR="$(pwd)"
-DATA_DIR="$BASE_DIR/ATAC_data/nestin_trimmed" # Use the trimmed data directory with absolute path
-OUTPUT_DIR="$BASE_DIR/ATAC_data/cellranger_atac_trimmed_output"
-TMP_DIR="$BASE_DIR/ATAC_data/tmp"
+# Note: SLURM runs this script from within ATAC_data directory
+BASE_DIR="/beegfs/scratch/ric.sessa/kubacki.michal/SRF_Linda/ATAC_data"
+DATA_DIR="$BASE_DIR/nestin_trimmed" # Use the trimmed data directory with absolute path
+OUTPUT_DIR="$BASE_DIR/cellranger_arc_trimmed_output"
+TMP_DIR="$BASE_DIR/tmp"
 
 # Sample names
 SAMPLES=("R26-Nestin-Ctrl-adult" "R26-Nestin-Mut-adult")
 
 # Get sample for this array job
 SAMPLE="${SAMPLES[$SLURM_ARRAY_TASK_ID]}"
-echo "Processing trimmed ATAC sample: $SAMPLE"
+echo "Processing trimmed ARC-v1 ATAC-only sample: $SAMPLE"
 
 # Create directories
 mkdir -p "$OUTPUT_DIR" "$TMP_DIR"
@@ -59,7 +60,7 @@ LOCAL_TMP="$TMP_DIR/cellranger_atac_trimmed_${SAMPLE}_${SLURM_ARRAY_TASK_ID}"
 # Create working directories
 mkdir -p "$FASTQ_DIR" "$LOCAL_TMP"
 
-echo "Creating symbolic links for trimmed ATAC files..."
+echo "Creating symbolic links for trimmed ARC-v1 ATAC files..."
 
 # Verify input files exist
 echo "Verifying input files exist:"
@@ -107,13 +108,13 @@ if [[ -d "$UNIQUE_ID" ]]; then
     rm -rf "$UNIQUE_ID"
 fi
 
-echo "Starting CellRanger ATAC on trimmed data..."
+echo "Starting CellRanger ATAC on trimmed ARC-v1 data..."
 echo "Sample: $SAMPLE"
 echo "Reference: $REF"
 echo "FASTQ directory: $FASTQ_DIR"
 echo "Working directory: $LOCAL_TMP"
 
-# Run CellRanger ATAC count
+# Run CellRanger ATAC count for ARC-v1 chemistry ATAC-only data
 "$CELLRANGER_ATAC" count \
     --id="$UNIQUE_ID" \
     --reference="$REF" \
@@ -136,6 +137,16 @@ if [[ $? -eq 0 ]]; then
     if [[ -d "$UNIQUE_ID/outs" ]]; then
         cp -r "$UNIQUE_ID/outs/"* "$ATAC_DIR/"
         echo "Results successfully copied to $ATAC_DIR"
+        
+        # Verify key ATAC output files
+        echo "Key ATAC output files created:"
+        for file in "web_summary.html" "summary.csv" "filtered_peak_bc_matrix.h5" "fragments.tsv.gz" "peaks.bed" "singlecell.csv"; do
+            if [[ -f "$ATAC_DIR/$file" ]]; then
+                echo "  ✓ $file"
+            else
+                echo "  ✗ $file (missing)"
+            fi
+        done
     else
         echo "ERROR: Expected output directory not found: $UNIQUE_ID/outs"
         exit 1
