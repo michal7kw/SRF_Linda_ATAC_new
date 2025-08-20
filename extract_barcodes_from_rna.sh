@@ -13,7 +13,7 @@
 set -euo pipefail
 
 # Configuration - Point to successful RNA results
-RNA_RESULTS_DIR="/beegfs/scratch/ric.sessa/kubacki.michal/SRF_Linda_RNA/cellranger_final_count_data_trans"
+RNA_RESULTS_DIR="/beegfs/scratch/ric.sessa/kubacki.michal/SRF_Linda_RNA/cellranger_final_count_data"
 OUTPUT_DIR="/beegfs/scratch/ric.sessa/kubacki.michal/SRF_Linda/ATAC_data/barcode_whitelists"
 
 # Create output directory
