@@ -1,0 +1,7 @@
+Sample: R26-Nestin-Mut-adult
+Total reads analyzed: 100000
+Best barcode position: pos_7_len_16
+Best position matches: 2
+
+All positions:
+pos_7_len_16: 2 matches (0.00%)

@@ -33,50 +33,36 @@ echo "Processing ATAC sample using RNA barcodes: $SAMPLE"
 OUTPUT_DIR="$OUTPUT_BASE/$SAMPLE"
 mkdir -p "$OUTPUT_DIR" "logs"
 
-# Step 1: Extract barcodes from RNA if not already done
-BARCODE_DIR="$OUTPUT_BASE/barcode_whitelists"
-mkdir -p "$BARCODE_DIR"
+# Step 1: Use existing extracted barcodes
+BARCODE_DIR="/beegfs/scratch/ric.sessa/kubacki.michal/SRF_Linda/ATAC_data/barcode_whitelists"
 
-RNA_SAMPLE_NAME="${SAMPLE//-/_}"  # Convert format
-BARCODE_FILE="$BARCODE_DIR/${SAMPLE}_rna_barcodes.txt"
+# Map sample names to barcode file names
+case "$SAMPLE" in
+    "R26-Nestin-Ctrl-adult")
+        BARCODE_NAME="Nestin_Ctrl_rna_barcodes.txt"
+        ;;
+    "R26-Nestin-Mut-adult")
+        BARCODE_NAME="Nestin_Mut_rna_barcodes.txt"
+        ;;
+    *)
+        echo "ERROR: Unknown sample name: $SAMPLE"
+        exit 1
+        ;;
+esac
 
+BARCODE_FILE="$BARCODE_DIR/$BARCODE_NAME"
+
+# Check if barcode file exists
 if [[ ! -f "$BARCODE_FILE" ]]; then
-    echo "Extracting barcodes from RNA results..."
-    
-    # Look for RNA matrix
-    MATRIX_DIR=""
-    for dir in \
-        "$RNA_RESULTS_DIR/cellranger_counts_${RNA_SAMPLE_NAME}/outs/filtered_feature_bc_matrix" \
-        "$RNA_RESULTS_DIR/${RNA_SAMPLE_NAME}_counts/filtered_feature_bc_matrix" \
-        "$RNA_RESULTS_DIR/${RNA_SAMPLE_NAME}/outs/filtered_feature_bc_matrix"; do
-        if [[ -d "$dir" ]]; then
-            MATRIX_DIR="$dir"
-            break
-        fi
-    done
-    
-    if [[ -z "$MATRIX_DIR" ]]; then
-        echo "ERROR: Could not find RNA matrix for $SAMPLE"
-        echo "Searched in $RNA_RESULTS_DIR"
-        exit 1
-    fi
-    
-    # Extract barcodes
-    if [[ -f "$MATRIX_DIR/barcodes.tsv.gz" ]]; then
-        zcat "$MATRIX_DIR/barcodes.tsv.gz" | cut -f1 -d'-' > "$BARCODE_FILE"
-    elif [[ -f "$MATRIX_DIR/barcodes.tsv" ]]; then
-        cut -f1 -d'-' "$MATRIX_DIR/barcodes.tsv" > "$BARCODE_FILE"
-    else
-        echo "ERROR: No barcodes file found in $MATRIX_DIR"
-        exit 1
-    fi
-    
-    NUM_BARCODES=$(wc -l < "$BARCODE_FILE")
-    echo "Extracted $NUM_BARCODES valid cell barcodes from RNA"
-else
-    NUM_BARCODES=$(wc -l < "$BARCODE_FILE")
-    echo "Using existing barcode file with $NUM_BARCODES barcodes"
+    echo "ERROR: Barcode file not found: $BARCODE_FILE"
+    echo "Available barcode files in $BARCODE_DIR:"
+    ls -la "$BARCODE_DIR"/ || echo "Directory not accessible"
+    exit 1
 fi
+
+NUM_BARCODES=$(wc -l < "$BARCODE_FILE")
+echo "Using existing barcode file: $BARCODE_FILE"
+echo "Number of barcodes: $NUM_BARCODES"
 
 # Step 2: Analyze barcode positions in ATAC R2
 echo "Analyzing barcode positions in ATAC data..."
