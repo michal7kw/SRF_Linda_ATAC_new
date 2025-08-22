@@ -1,4 +1,0 @@
-Sample: R26-Nestin-Mut-adult
-Total reads: 372717579
-Filtered reads: 1
-Filtering rate: 0.00%

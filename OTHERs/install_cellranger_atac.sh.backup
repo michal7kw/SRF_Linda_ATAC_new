@@ -1,0 +1,101 @@
+#!/bin/bash
+
+# CellRanger ATAC Installation Script
+# Downloads and installs CellRanger ATAC 2.2.0 for ATAC-only processing
+
+echo "=== CellRanger ATAC 2.2.0 Installation ==="
+echo ""
+
+# Configuration
+TOOLS_DIR="/beegfs/scratch/ric.sessa/kubacki.michal/tools"
+CELLRANGER_ATAC_VERSION="2.2.0"
+CELLRANGER_ATAC_URL="https://cf.10xgenomics.com/releases/cell-atac/cellranger-atac-2.2.0.tar.gz?Expires=1755473156&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA&Signature=W6kgdFF-5fvD~wKepEGjtntczCaR3wNaWzHy~KHFiZ7I-MRoQ3oyejz-pW0fTGnVEZtIDoG4oQMT1FPWK9LCUkFI9tObs2NQRXlXc-633as5AjiPAEEQYLWtXmSHsgLZwFDFyC7WoVzmlLQl5h5m02wJJgaAznSApVp0KzVpzw7Tnc5SmdHNooHL8IzfmkD4oay8qGOC7CRvJls9gQDYVa~7fsxaF~9P5mOFVkqXr0D9rib0Twcp9RKGUfELuS14kM86QDgpow6ODYsuF92lcb-qDrMDiIAdEbI11hkZ9dHeNAXl0WtIWslIGYn67KqNjiQ6LroYsRYw9NqeFQg__"
+EXPECTED_MD5="c616198bd9aaca393f99c71e07ae46b6"
+INSTALL_DIR="$TOOLS_DIR/cellranger-atac-${CELLRANGER_ATAC_VERSION}"
+
+# Create tools directory if it doesn't exist
+mkdir -p "$TOOLS_DIR"
+cd "$TOOLS_DIR"
+
+echo "1. Checking if CellRanger ATAC is already installed..."
+if [ -f "$INSTALL_DIR/cellranger-atac" ]; then
+    echo "✓ CellRanger ATAC already installed at: $INSTALL_DIR"
+    echo "To reinstall, remove the directory and run this script again:"
+    echo "  rm -rf $INSTALL_DIR"
+    exit 0
+fi
+
+echo "2. Downloading CellRanger ATAC ${CELLRANGER_ATAC_VERSION}..."
+TARBALL="cellranger-atac-${CELLRANGER_ATAC_VERSION}.tar.gz"
+
+# Download with progress indicator
+if command -v wget >/dev/null 2>&1; then
+    wget --progress=bar:force --tries=3 "$CELLRANGER_ATAC_URL" -O "$TARBALL"
+elif command -v curl >/dev/null 2>&1; then
+    curl -L -o "$TARBALL" "$CELLRANGER_ATAC_URL"
+else
+    echo "ERROR: Neither wget nor curl found. Cannot download CellRanger ATAC."
+    exit 1
+fi
+
+# Verify download
+if [ ! -f "$TARBALL" ]; then
+    echo "ERROR: Download failed. File not found: $TARBALL"
+    exit 1
+fi
+
+echo "3. Verifying download integrity..."
+if command -v md5sum >/dev/null 2>&1; then
+    ACTUAL_MD5=$(md5sum "$TARBALL" | cut -d' ' -f1)
+    if [ "$ACTUAL_MD5" = "$EXPECTED_MD5" ]; then
+        echo "✓ MD5 checksum verified: $ACTUAL_MD5"
+    else
+        echo "✗ MD5 checksum mismatch!"
+        echo "  Expected: $EXPECTED_MD5"
+        echo "  Actual:   $ACTUAL_MD5"
+        echo "  Download may be corrupted. Please try again."
+        rm -f "$TARBALL"
+        exit 1
+    fi
+else
+    echo "⚠ md5sum not available, skipping integrity check"
+fi
+
+echo "4. Extracting CellRanger ATAC..."
+tar -xzf "$TARBALL"
+
+if [ ! -d "cellranger-atac-${CELLRANGER_ATAC_VERSION}" ]; then
+    echo "ERROR: Extraction failed or unexpected directory structure"
+    exit 1
+fi
+
+echo "5. Setting up installation..."
+# The extraction creates cellranger-atac-X.X.X directory
+if [ ! -f "cellranger-atac-${CELLRANGER_ATAC_VERSION}/cellranger-atac" ]; then
+    echo "ERROR: cellranger-atac executable not found after extraction"
+    exit 1
+fi
+
+# Make executable
+chmod +x "cellranger-atac-${CELLRANGER_ATAC_VERSION}/cellranger-atac"
+
+echo "6. Testing installation..."
+CELLRANGER_ATAC_PATH="$INSTALL_DIR/cellranger-atac"
+VERSION_OUTPUT=$("$CELLRANGER_ATAC_PATH" --version 2>&1 | head -n1)
+echo "✓ Installation successful!"
+echo "  Version: $VERSION_OUTPUT"
+echo "  Path: $CELLRANGER_ATAC_PATH"
+
+echo "7. Cleaning up..."
+rm -f "$TARBALL"
+
+echo ""
+echo "=== Installation Complete ==="
+echo "CellRanger ATAC is now installed at:"
+echo "  $CELLRANGER_ATAC_PATH"
+echo ""
+echo "Next steps:"
+echo "1. Update the processing script to use this path"
+echo "2. Verify the mouse reference genome is compatible"
+echo "3. Run the updated ATAC processing pipeline"
+echo ""
