@@ -96,16 +96,11 @@ done
 # The key insight: this is ARC-v1 multiome data, so file structure should match
 # Create symbolic links following RNA processing pattern
 # The key insight: this is ARC-v1 multiome data, so file structure should match
-for READ in "I1" "R1" "R3"; do # R2 is handled separately
-    SOURCE_FILE="$DATA_DIR/${SAMPLE}_${READ}_001.fastq.gz"
-    TARGET_FILE="$FASTQ_DIR/${SAMPLE}_S1_L001_${READ}_001.fastq.gz"
-    ln -sf "$SOURCE_FILE" "$TARGET_FILE"
-done
-
-# For R2, use the 16bp extracted barcode file
-SOURCE_FILE="$PROCESSED_DATA_DIR/${SAMPLE}_R2_16bp.fastq.gz"
-TARGET_FILE="$FASTQ_DIR/${SAMPLE}_S1_L001_R2_001.fastq.gz"
-ln -sf "$SOURCE_FILE" "$TARGET_FILE"
+# Rename files to match expected format
+ln -sf "$DATA_DIR/${SAMPLE}_I1_001.fastq.gz" "$FASTQ_DIR/${SAMPLE}_S1_L001_I1_001.fastq.gz"
+ln -sf "$PROCESSED_DATA_DIR/${SAMPLE}_R2_16bp.fastq.gz" "$FASTQ_DIR/${SAMPLE}_S1_L001_R1_001.fastq.gz"
+ln -sf "$DATA_DIR/${SAMPLE}_R1_001.fastq.gz" "$FASTQ_DIR/${SAMPLE}_S1_L001_R2_001.fastq.gz"
+ln -sf "$DATA_DIR/${SAMPLE}_R3_001.fastq.gz" "$FASTQ_DIR/${SAMPLE}_S1_L001_R3_001.fastq.gz"
 
 # Validate CellRanger ATAC executable
 if [[ ! -x "$CELLRANGER_ARC" ]]; then
