@@ -385,13 +385,15 @@ echo "DEBUG: Step 6 - Calling peaks with MACS2..."
 # Generate genome sizes
 echo "DEBUG: Checking for genome sizes file..."
 if [[ ! -f "$OUTPUT_DIR/qc/genome.chrom.sizes" ]]; then
-    echo "DEBUG: Generating genome sizes file..."
-    if command -v faSize &> /dev/null; then
-        faSize -detailed "$REF_GENOME" | sort -k1,1 > "$OUTPUT_DIR/qc/genome.chrom.sizes"
-        echo "DEBUG: Genome sizes file created: $(wc -l < "$OUTPUT_DIR/qc/genome.chrom.sizes") chromosomes"
+    echo "DEBUG: Generating genome sizes file from reference index..."
+    if [[ -f "${REF_GENOME}.fai" ]]; then
+        cut -f1,2 "${REF_GENOME}.fai" > "$OUTPUT_DIR/qc/genome.chrom.sizes"
+        echo "DEBUG: Created genome sizes file: $(wc -l < "$OUTPUT_DIR/qc/genome.chrom.sizes") chromosomes"
     else
-        echo "ERROR: faSize command not found. Please install UCSC tools or provide genome.chrom.sizes file"
-        exit 1
+        echo "DEBUG: Creating reference index first..."
+        samtools faidx "$REF_GENOME"
+        cut -f1,2 "${REF_GENOME}.fai" > "$OUTPUT_DIR/qc/genome.chrom.sizes"
+        echo "DEBUG: Created genome sizes file: $(wc -l < "$OUTPUT_DIR/qc/genome.chrom.sizes") chromosomes"
     fi
 else
     echo "DEBUG: Genome sizes file already exists: $(wc -l < "$OUTPUT_DIR/qc/genome.chrom.sizes") chromosomes"
