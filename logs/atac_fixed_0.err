@@ -1,1 +1,2 @@
-/var/spool/slurmd/job5833935/slurm_script: line 355: bedClip: command not found
+WARNING: overwriting environment variables set in the machine
+overwriting variable ['TMPDIR']

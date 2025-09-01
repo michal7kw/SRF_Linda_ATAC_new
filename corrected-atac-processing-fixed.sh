@@ -1,12 +1,16 @@
 #!/bin/bash
 #SBATCH --job-name=atac_processing_fixed
-#SBATCH --output=logs/atac_fixed_%A_%a.out
-#SBATCH --error=logs/atac_fixed_%A_%a.err
+#SBATCH --output=logs/atac_fixed_%a.out
+#SBATCH --error=logs/atac_fixed_%a.err
 #SBATCH --array=0-1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=128G
 #SBATCH --time=48:00:00
 #SBATCH --partition=workq
+
+# Set up conda environment with required tools
+source /opt/common/tools/ric.cosr/miniconda3/bin/activate
+conda activate alignment_two
 
 set -euo pipefail
 

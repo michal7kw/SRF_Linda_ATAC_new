@@ -1,6 +1,6 @@
 =========================================
 Processing ATAC sample: R26-Nestin-Ctrl-adult (FIXED VERSION)
-Start time: Mon Sep  1 02:58:52 PM CEST 2025
+Start time: Mon Sep  1 03:58:57 PM CEST 2025
 =========================================
 DEBUG: Configuration variables:
   SAMPLE: R26-Nestin-Ctrl-adult
@@ -43,8 +43,8 @@ INFO: Good barcode match rate (93.80%)
 Step 3: Running chromap alignment...
 DEBUG: Proceeding with barcode error threshold: 1
 DEBUG: Checking chromap availability...
-DEBUG: chromap found: /beegfs/scratch/ric.broccoli/kubacki.michal/conda/bin/chromap
-DEBUG: chromap version: 0.3.1-r516
+DEBUG: chromap found: /beegfs/scratch/ric.sessa/kubacki.michal/conda/envs/alignment_two/bin/chromap
+DEBUG: chromap version: 0.3.2-r518
 DEBUG: Using existing chromap index: /beegfs/scratch/ric.sessa/kubacki.michal/SRF_Linda/ATAC_data/chromap_final_output/chromap_index/mm10.index
 DEBUG: Running chromap with the following parameters:
   Reference: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_MeCP2/SRF_MeCP2_CUTandTAG/DATA/mm10.fa
@@ -78,558 +78,545 @@ Index file: /beegfs/scratch/ric.sessa/kubacki.michal/SRF_Linda/ATAC_data/chromap
 1th cell barcode file: /beegfs/scratch/ric.sessa/kubacki.michal/SRF_Linda/ATAC_data/DATA/nestin_processed/R26-Nestin-Ctrl-adult_R2_rightmost16bp.fastq.gz
 Cell barcode whitelist file: /beegfs/scratch/ric.sessa/kubacki.michal/SRF_Linda/ATAC_data/barcode_whitelists/atac_737K-arc-v1_rc.txt
 Output file: /beegfs/scratch/ric.sessa/kubacki.michal/SRF_Linda/ATAC_data/chromap_final_output/fragments/R26-Nestin-Ctrl-adult_fragments.tsv
-Loaded all sequences successfully in 5.45s, number of sequences: 66, number of bases: 2730871774.
+Loaded all sequences successfully in 7.89s, number of sequences: 66, number of bases: 2730871774.
 Kmer size: 17, window size: 7.
 Lookup table size: 370040657, occurrence table size: 382010151.
-Loaded index successfully in 13.19s.
+Loaded index successfully in 4.16s.
 Cache Size: 4000003
 Cache Update Param: 0.01
 Output number of associated cache slots: 0
 K for MinHash: 250
 Loaded sequence batch successfully in 0.00s, number of sequences: 1000.
-Loaded 736320 barcodes in 0.52s.
-Loaded sequence batch successfully in 0.50s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.27s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.26s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.25s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.25s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.26s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.25s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.25s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.26s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.27s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.29s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.24s, number of sequences: 500000.
-Loaded sequence batch successfully in 0.27s, number of sequences: 500000.
-Compute barcode abundance using 20339559 in 20.02s.
-Mapped 500000 read pairs in 1.25s.
-Mapped 500000 read pairs in 0.72s.
-Mapped 500000 read pairs in 0.72s.
-Mapped 500000 read pairs in 0.72s.
-Mapped 500000 read pairs in 0.72s.
-Mapped 500000 read pairs in 0.71s.
-Mapped 500000 read pairs in 0.71s.
-Mapped 500000 read pairs in 0.71s.
-Mapped 500000 read pairs in 0.71s.
-Mapped 500000 read pairs in 0.71s.
-Mapped 500000 read pairs in 0.71s.
-Mapped 500000 read pairs in 0.72s.
-Mapped 500000 read pairs in 0.70s.
-Mapped 500000 read pairs in 0.71s.
-Mapped 500000 read pairs in 0.72s.
-Mapped 500000 read pairs in 0.70s.
-Mapped 500000 read pairs in 0.71s.
-Mapped 500000 read pairs in 0.71s.
-Mapped 500000 read pairs in 0.71s.
-Mapped 500000 read pairs in 0.70s.
-Mapped 500000 read pairs in 0.71s.
-Mapped 500000 read pairs in 0.71s.
-Mapped 500000 read pairs in 0.71s.
-Mapped 500000 read pairs in 0.70s.
-Mapped 500000 read pairs in 0.71s.
-Mapped 500000 read pairs in 0.71s.
-Mapped 500000 read pairs in 0.71s.
-Mapped 500000 read pairs in 0.71s.
-Mapped 500000 read pairs in 0.71s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.70s.
-Mapped 500000 read pairs in 0.70s.
-Mapped 500000 read pairs in 0.70s.
-Mapped 500000 read pairs in 0.71s.
-Mapped 500000 read pairs in 0.70s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.70s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.70s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.70s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.70s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.70s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.70s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.70s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.71s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 2.86s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.69s.
+Loaded 736320 barcodes in 0.42s.
+Loaded sequence batch successfully in 0.30s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.19s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.19s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.19s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.19s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.19s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.19s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.19s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.19s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.21s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.20s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.20s, number of sequences: 500000.
+Loaded sequence batch successfully in 0.18s, number of sequences: 500000.
+Compute barcode abundance using 20339559 in 14.89s.
+Mapped 500000 read pairs in 0.97s.
 Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.70s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 2.85s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.69s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 2.87s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 2.85s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.64s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 2.82s.
-Mapped 500000 read pairs in 0.65s.
-Mapped 500000 read pairs in 0.65s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.65s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.65s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.65s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.65s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 2.81s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.68s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.65s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.65s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.65s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 2.80s.
-Mapped 500000 read pairs in 0.65s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.65s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.65s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.65s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.65s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.65s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.65s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.65s.
-Mapped 500000 read pairs in 0.65s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.65s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.65s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.65s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.65s.
-Mapped 500000 read pairs in 2.83s.
-Mapped 500000 read pairs in 0.65s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.66s.
-Mapped 500000 read pairs in 0.67s.
-Mapped 500000 read pairs in 0.67s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.63s.
+Mapped 500000 read pairs in 0.63s.
+Mapped 500000 read pairs in 0.63s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.63s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.63s.
+Mapped 500000 read pairs in 0.63s.
+Mapped 500000 read pairs in 0.63s.
+Mapped 500000 read pairs in 0.63s.
+Mapped 500000 read pairs in 0.63s.
+Mapped 500000 read pairs in 0.63s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.63s.
+Mapped 500000 read pairs in 0.63s.
+Mapped 500000 read pairs in 0.63s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.63s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.63s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.63s.
+Mapped 500000 read pairs in 0.63s.
+Mapped 500000 read pairs in 0.63s.
+Mapped 500000 read pairs in 0.63s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 2.45s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 2.44s.
+Mapped 500000 read pairs in 0.57s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.62s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.61s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 2.44s.
+Mapped 500000 read pairs in 0.54s.
+Mapped 500000 read pairs in 0.57s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 2.44s.
+Mapped 500000 read pairs in 0.54s.
 Mapped 500000 read pairs in 0.56s.
-Mapped 6914 read pairs in 0.09s.
-Mapped all reads in 336.36s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 2.43s.
+Mapped 500000 read pairs in 0.54s.
+Mapped 500000 read pairs in 0.55s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 2.41s.
+Mapped 500000 read pairs in 0.53s.
+Mapped 500000 read pairs in 0.54s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.60s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 2.43s.
+Mapped 500000 read pairs in 0.54s.
+Mapped 500000 read pairs in 0.54s.
+Mapped 500000 read pairs in 0.57s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.57s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.57s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.58s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 2.47s.
+Mapped 500000 read pairs in 0.54s.
+Mapped 500000 read pairs in 0.55s.
+Mapped 500000 read pairs in 0.54s.
+Mapped 500000 read pairs in 0.57s.
+Mapped 500000 read pairs in 0.59s.
+Mapped 500000 read pairs in 0.50s.
+Mapped 6914 read pairs in 0.07s.
+Mapped all reads in 296.72s.
 Number of reads: 471013828.
 Number of mapped reads: 438149348.
-Number of uniquely mapped reads: 425905734.
-Number of reads have multi-mappings: 12243614.
+Number of uniquely mapped reads: 425906004.
+Number of reads have multi-mappings: 12243344.
 Number of candidates: 2090274104.
 Number of mappings: 438149348.
-Number of uni-mappings: 425905734.
-Number of multi-mappings: 12243614.
+Number of uni-mappings: 425906004.
+Number of multi-mappings: 12243344.
 Number of barcodes in whitelist: 227109221.
 Number of corrected barcodes: 3849818.
-Sorted, deduped and outputed mappings in 86.94s.
-# uni-mappings: 165614388, # multi-mappings: 5068246, total: 170682634.
-Number of output mappings (passed filters): 163409413
-Total time: 464.40s.
+Sorted, deduped and outputed mappings in 63.69s.
+# uni-mappings: 165614420, # multi-mappings: 5068336, total: 170682756.
+Number of output mappings (passed filters): 163409523
+Total time: 389.16s.
 
 Step 4: Processing fragments...
-
-Step 5: Generating statistics...
-Fragment statistics:
-  Total fragments: 163409413
-  Unique barcodes: 458921
-  Valid whitelist barcodes: 1
-  Fragments in cells: 163409413
-  Fraction in cells: 1.0000
-
-DEBUG: Step 6 - Calling peaks with MACS2...
-DEBUG: Checking for genome sizes file...
-DEBUG: Genome sizes file already exists: 66 chromosomes
-DEBUG: Converting fragments to reads for peak calling...
