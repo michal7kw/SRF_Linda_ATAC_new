@@ -82,16 +82,29 @@ mkdir -p "$WHITELIST_DIR"
 
 # Download whitelists if needed
 if [[ ! -f "$WHITELIST_DIR/atac_737K-arc-v1.txt" ]]; then
-    echo "Downloading whitelist..."
+    echo "DEBUG: Downloading whitelist..."
     wget -q -O "$WHITELIST_DIR/atac_737K-arc-v1.txt.gz" \
         https://teichlab.github.io/scg_lib_structs/data/10X-Genomics/atac_737K-arc-v1.txt.gz
+    
+    if [[ $? -ne 0 ]]; then
+        echo "ERROR: Failed to download whitelist"
+        exit 1
+    fi
+    
     gunzip "$WHITELIST_DIR/atac_737K-arc-v1.txt.gz"
+    echo "DEBUG: Whitelist downloaded and extracted"
 fi
 
+echo "DEBUG: Checking whitelist files..."
+echo "  Original whitelist: $(wc -l < "$WHITELIST_DIR/atac_737K-arc-v1.txt") barcodes"
+
 if [[ ! -f "$WHITELIST_DIR/atac_737K-arc-v1_rc.txt" ]]; then
+    echo "DEBUG: Creating reverse complement whitelist..."
     cat "$WHITELIST_DIR/atac_737K-arc-v1.txt" | rev | tr 'ACGT' 'TGCA' > \
         "$WHITELIST_DIR/atac_737K-arc-v1_rc.txt"
 fi
+
+echo "  RC whitelist: $(wc -l < "$WHITELIST_DIR/atac_737K-arc-v1_rc.txt") barcodes"
 
 # Test extracted barcodes
 echo "DEBUG: Testing extracted barcodes against whitelists..."
@@ -133,14 +146,31 @@ fi
 N_COUNT=$(echo "$SAMPLE_SEQ" | grep -o 'N' | wc -l)
 echo "DEBUG: Number of N's in sample barcode: $N_COUNT"
 
-# Test both whitelist orientations
+# Test both whitelist orientations with timeout and optimization
 echo "DEBUG: Testing whitelist orientations..."
-MATCHES_ORIG=$(grep -Ff "$WHITELIST_DIR/atac_737K-arc-v1.txt" "$OUTPUT_DIR/qc/test_barcodes.txt" | wc -l)
-MATCHES_RC=$(grep -Ff "$WHITELIST_DIR/atac_737K-arc-v1_rc.txt" "$OUTPUT_DIR/qc/test_barcodes.txt" | wc -l)
+echo "DEBUG: Using optimized matching approach to avoid hangs..."
 
-echo "Whitelist matching results:"
-echo "  Original: $MATCHES_ORIG / $TEST_BC_COUNT ($(echo "scale=2; ${MATCHES_ORIG:-0} * 100 / $TEST_BC_COUNT" | bc)%)"
-echo "  Reverse complement: $MATCHES_RC / $TEST_BC_COUNT ($(echo "scale=2; ${MATCHES_RC:-0} * 100 / $TEST_BC_COUNT" | bc)%)"
+# Use a smaller test set for initial orientation testing
+head -1000 "$OUTPUT_DIR/qc/test_barcodes.txt" > "$OUTPUT_DIR/qc/test_barcodes_small.txt"
+
+echo "DEBUG: Testing original whitelist..."
+MATCHES_ORIG=$(timeout 60 bash -c "grep -Fxf '$WHITELIST_DIR/atac_737K-arc-v1.txt' '$OUTPUT_DIR/qc/test_barcodes_small.txt' | wc -l" 2>/dev/null || echo "0")
+if [[ $? -eq 124 ]]; then
+    echo "WARNING: Original whitelist test timed out, using alternative method"
+    MATCHES_ORIG=$(timeout 30 bash -c "awk 'NR==FNR{a[\$0]=1;next} \$0 in a{c++} END{print c+0}' '$WHITELIST_DIR/atac_737K-arc-v1.txt' '$OUTPUT_DIR/qc/test_barcodes_small.txt'" 2>/dev/null || echo "0")
+fi
+
+echo "DEBUG: Testing reverse complement whitelist..."
+MATCHES_RC=$(timeout 60 bash -c "grep -Fxf '$WHITELIST_DIR/atac_737K-arc-v1_rc.txt' '$OUTPUT_DIR/qc/test_barcodes_small.txt' | wc -l" 2>/dev/null || echo "0")
+if [[ $? -eq 124 ]]; then
+    echo "WARNING: Reverse complement whitelist test timed out, using alternative method"
+    MATCHES_RC=$(timeout 30 bash -c "awk 'NR==FNR{a[\$0]=1;next} \$0 in a{c++} END{print c+0}' '$WHITELIST_DIR/atac_737K-arc-v1_rc.txt' '$OUTPUT_DIR/qc/test_barcodes_small.txt'" 2>/dev/null || echo "0")
+fi
+
+SMALL_BC_COUNT=$(wc -l < "$OUTPUT_DIR/qc/test_barcodes_small.txt")
+echo "Whitelist matching results (tested on $SMALL_BC_COUNT barcodes):"
+echo "  Original: $MATCHES_ORIG / $SMALL_BC_COUNT ($(echo "scale=2; ${MATCHES_ORIG:-0} * 100 / $SMALL_BC_COUNT" | bc)%)"
+echo "  Reverse complement: $MATCHES_RC / $SMALL_BC_COUNT ($(echo "scale=2; ${MATCHES_RC:-0} * 100 / $SMALL_BC_COUNT" | bc)%)"
 
 # Choose the best matching whitelist
 if [[ $MATCHES_RC -gt $MATCHES_ORIG ]]; then
@@ -153,9 +183,9 @@ fi
 
 # Set barcode error threshold based on match rate
 MAX_MATCHES=$((MATCHES_ORIG > MATCHES_RC ? MATCHES_ORIG : MATCHES_RC))
-MATCH_RATE=$(echo "scale=2; ${MAX_MATCHES:-0} * 100 / $TEST_BC_COUNT" | bc)
+MATCH_RATE=$(echo "scale=2; ${MAX_MATCHES:-0} * 100 / $SMALL_BC_COUNT" | bc)
 
-echo "DEBUG: Best match rate: ${MATCH_RATE}%"
+echo "DEBUG: Best match rate: ${MATCH_RATE}% (from $SMALL_BC_COUNT test barcodes)"
 
 if [[ $(echo "$MATCH_RATE < 5.0" | bc) -eq 1 ]]; then
     echo "ERROR: Very low barcode match rate (${MATCH_RATE}%)"
@@ -178,6 +208,7 @@ fi
 # Step 3: Run chromap alignment
 echo ""
 echo "Step 3: Running chromap alignment..."
+echo "DEBUG: Proceeding with barcode error threshold: $BC_ERROR_THRESHOLD"
 
 # Check chromap availability
 echo "DEBUG: Checking chromap availability..."
