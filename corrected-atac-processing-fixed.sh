@@ -346,15 +346,54 @@ fi
 
 # Convert fragments to reads for peak calling
 echo "DEBUG: Converting fragments to reads for peak calling..."
-zcat "$OUTPUT_DIR/fragments/${SAMPLE}_fragments.tsv.gz" | \
-    awk 'BEGIN{OFS="\t"}{
-        print $1, $2, $2+50, $4, ".", "+"
-        print $1, $3-50, $3, $4, ".", "-"
-    }' | \
-    sed '/chrM/d' | \
-    bedClip stdin "$OUTPUT_DIR/qc/genome.chrom.sizes" stdout | \
-    sort -k1,1 -k2,2n | \
-    gzip > "$OUTPUT_DIR/${SAMPLE}_reads.bed.gz"
+
+# Check if bedClip is available
+if command -v bedClip &> /dev/null; then
+    echo "DEBUG: Using bedClip for coordinate clipping"
+    zcat "$OUTPUT_DIR/fragments/${SAMPLE}_fragments.tsv.gz" | \
+        awk 'BEGIN{OFS="\t"}{
+            print $1, $2, $2+50, $4, ".", "+"
+            print $1, $3-50, $3, $4, ".", "-"
+        }' | \
+        sed '/chrM/d' | \
+        bedClip stdin "$OUTPUT_DIR/qc/genome.chrom.sizes" stdout | \
+        sort -k1,1 -k2,2n | \
+        gzip > "$OUTPUT_DIR/${SAMPLE}_reads.bed.gz"
+else
+    echo "DEBUG: bedClip not found, using alternative coordinate clipping"
+    # Alternative method using awk to clip coordinates
+    zcat "$OUTPUT_DIR/fragments/${SAMPLE}_fragments.tsv.gz" | \
+        awk -v sizefile="$OUTPUT_DIR/qc/genome.chrom.sizes" '
+        BEGIN {
+            OFS="\t"
+            # Load chromosome sizes
+            while((getline line < sizefile) > 0) {
+                split(line, a, "\t")
+                chrsize[a[1]] = a[2]
+            }
+            close(sizefile)
+        }
+        {
+            # Skip mitochondrial reads
+            if($1 == "chrM") next
+            
+            # Generate reads from fragment ends
+            start1 = $2; end1 = $2 + 50
+            start2 = $3 - 50; end2 = $3
+            
+            # Clip to chromosome boundaries
+            if(start1 < 0) start1 = 0
+            if(end1 > chrsize[$1]) end1 = chrsize[$1]
+            if(start2 < 0) start2 = 0  
+            if(end2 > chrsize[$1]) end2 = chrsize[$1]
+            
+            # Only output if coordinates are valid
+            if(start1 < end1) print $1, start1, end1, $4, ".", "+"
+            if(start2 < end2) print $1, start2, end2, $4, ".", "-"
+        }' | \
+        sort -k1,1 -k2,2n | \
+        gzip > "$OUTPUT_DIR/${SAMPLE}_reads.bed.gz"
+fi
 
 if [[ $? -eq 0 ]]; then
     echo "DEBUG: Reads file created successfully"
