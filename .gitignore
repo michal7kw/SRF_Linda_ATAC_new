@@ -21,7 +21,7 @@ cellranger_atac_*_output/
 cellranger-*
 
 # Log files (you may want to keep some logs, adjust as needed)
-*.log
+# *.log
 *.out
 *.err
 
@@ -73,3 +73,7 @@ bulk_atac_nestin_output/
 DOCs/
 Markdown/Notes/Email answer.md
 Markdown/Notes/Email question.md
+!logs/atac_fixed_0.err
+!logs/atac_fixed_1.err
+!logs/atac_fixed_0.out
+!logs/atac_fixed_1.out
