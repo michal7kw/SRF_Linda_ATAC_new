@@ -2,7 +2,7 @@
 #SBATCH --job-name=atac_processing_fixed
 #SBATCH --output=logs/atac_fixed_%a.out
 #SBATCH --error=logs/atac_fixed_%a.err
-#SBATCH --array=1
+#SBATCH --array=0
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=128G
 #SBATCH --time=48:00:00
@@ -58,6 +58,9 @@ EXTRACTED_BC_FILE="$PROCESSED_DATA_DIR/${SAMPLE}_R2_rightmost16bp.fastq.gz"
 echo "DEBUG: R2 structure according to facility:"
 echo "  [8bp SPACER][16bp 10x barcode] = 24bp total"
 echo "  Extracting rightmost 16bp (positions 9-24)"
+
+# Ensure any previous partial file is removed to prevent errors
+# rm -f "$EXTRACTED_BC_FILE"
 
 if [[ ! -f "$EXTRACTED_BC_FILE" ]]; then
     echo "DEBUG: Extracting rightmost 16bp from R2..."
@@ -345,21 +348,25 @@ echo "  Whitelist: $WHITELIST"
 echo "  Barcode error threshold: $BC_ERROR_THRESHOLD"
 echo "  Expected match rate: ${MATCH_RATE}%"
 
-chromap --preset atac \
-    -x "$CHROMAP_INDEX" \
-    -r "$REF_GENOME" \
-    -1 "$DATA_DIR/${SAMPLE}_R1_001.fastq.gz" \
-    -2 "$DATA_DIR/${SAMPLE}_R3_001.fastq.gz" \
-    -b "$EXTRACTED_BC_FILE" \
-    --barcode-whitelist "$WHITELIST" \
-    --bc-error-threshold $BC_ERROR_THRESHOLD \
-    -e 5 \
-    -t $THREADS \
-    --low-mem \
-    -o "$OUTPUT_DIR/fragments/${SAMPLE}_fragments.tsv" 2>&1 | tee "$OUTPUT_DIR/logs/${SAMPLE}_chromap.log"
+if [[ ! -f "$OUTPUT_DIR/fragments/${SAMPLE}_fragments.tsv.gz" ]]; then
+    chromap --preset atac \
+        -x "$CHROMAP_INDEX" \
+        -r "$REF_GENOME" \
+        -1 "$DATA_DIR/${SAMPLE}_R1_001.fastq.gz" \
+        -2 "$DATA_DIR/${SAMPLE}_R3_001.fastq.gz" \
+        -b "$EXTRACTED_BC_FILE" \
+        --barcode-whitelist "$WHITELIST" \
+        --bc-error-threshold $BC_ERROR_THRESHOLD \
+        -e 5 \
+        -t $THREADS \
+        --low-mem \
+        -o "$OUTPUT_DIR/fragments/${SAMPLE}_fragments.tsv" 2>&1 | tee "$OUTPUT_DIR/logs/${SAMPLE}_chromap.log"
+else
+    echo "DEBUG: Skipping chromap alignment, fragments file already exists."
+fi
 
 # Check if chromap succeeded
-if [[ ! -f "$OUTPUT_DIR/fragments/${SAMPLE}_fragments.tsv" ]]; then
+if [[ ! -f "$OUTPUT_DIR/fragments/${SAMPLE}_fragments.tsv" && ! -f "$OUTPUT_DIR/fragments/${SAMPLE}_fragments.tsv.gz" ]]; then
     echo "ERROR: Chromap failed to generate fragments file"
     echo "DEBUG: Check chromap log: $OUTPUT_DIR/logs/${SAMPLE}_chromap.log"
     exit 1
@@ -369,8 +376,12 @@ fi
 echo ""
 echo "Step 4: Processing fragments..."
 
-bgzip -f "$OUTPUT_DIR/fragments/${SAMPLE}_fragments.tsv"
-tabix -f -s 1 -b 2 -e 3 -p bed "$OUTPUT_DIR/fragments/${SAMPLE}_fragments.tsv.gz"
+if [[ ! -f "$OUTPUT_DIR/fragments/${SAMPLE}_fragments.tsv.gz.tbi" ]]; then
+    bgzip -f "$OUTPUT_DIR/fragments/${SAMPLE}_fragments.tsv"
+    tabix -f -s 1 -b 2 -e 3 -p bed "$OUTPUT_DIR/fragments/${SAMPLE}_fragments.tsv.gz"
+else
+    echo "DEBUG: Skipping fragment indexing, index file already exists."
+fi
 
 # Step 5: Generate quality statistics
 echo ""
@@ -412,79 +423,83 @@ fi
 # Convert fragments to reads for peak calling
 echo "DEBUG: Converting fragments to reads for peak calling..."
 
-# Check if bedClip is available
-if command -v bedClip &> /dev/null; then
-    echo "DEBUG: Using bedClip for coordinate clipping"
-    zcat "$OUTPUT_DIR/fragments/${SAMPLE}_fragments.tsv.gz" | \
-        awk 'BEGIN{OFS="\t"}{
-            print $1, $2, $2+50, $4, ".", "+"
-            print $1, $3-50, $3, $4, ".", "-"
-        }' | \
-        sed '/chrM/d' | \
-        bedClip stdin "$OUTPUT_DIR/qc/genome.chrom.sizes" stdout | \
-        sort -k1,1 -k2,2n | \
-        gzip > "$OUTPUT_DIR/${SAMPLE}_reads.bed.gz"
-else
-    echo "DEBUG: bedClip not found, using alternative coordinate clipping"
-    # Alternative method using awk to clip coordinates
-    zcat "$OUTPUT_DIR/fragments/${SAMPLE}_fragments.tsv.gz" | \
-        awk -v sizefile="$OUTPUT_DIR/qc/genome.chrom.sizes" '
-        BEGIN {
-            OFS="\t"
-            # Load chromosome sizes
-            while((getline line < sizefile) > 0) {
-                split(line, a, "\t")
-                chrsize[a[1]] = a[2]
+if [[ ! -f "$OUTPUT_DIR/peaks/${SAMPLE}_peaks.narrowPeak" ]]; then
+    # Check if bedClip is available
+    if command -v bedClip &> /dev/null; then
+        echo "DEBUG: Using bedClip for coordinate clipping"
+        zcat "$OUTPUT_DIR/fragments/${SAMPLE}_fragments.tsv.gz" | \
+            awk 'BEGIN{OFS="\t"}{
+                print $1, $2, $2+50, $4, ".", "+"
+                print $1, $3-50, $3, $4, ".", "-"
+            }' | \
+            sed '/chrM/d' | \
+            bedClip stdin "$OUTPUT_DIR/qc/genome.chrom.sizes" stdout | \
+            sort -k1,1 -k2,2n | \
+            gzip > "$OUTPUT_DIR/${SAMPLE}_reads.bed.gz"
+    else
+        echo "DEBUG: bedClip not found, using alternative coordinate clipping"
+        # Alternative method using awk to clip coordinates
+        zcat "$OUTPUT_DIR/fragments/${SAMPLE}_fragments.tsv.gz" | \
+            awk -v sizefile="$OUTPUT_DIR/qc/genome.chrom.sizes" '
+            BEGIN {
+                OFS="\t"
+                # Load chromosome sizes
+                while((getline line < sizefile) > 0) {
+                    split(line, a, "\t")
+                    chrsize[a[1]] = a[2]
+                }
+                close(sizefile)
             }
-            close(sizefile)
-        }
-        {
-            # Skip mitochondrial reads
-            if($1 == "chrM") next
-            
-            # Generate reads from fragment ends
-            start1 = $2; end1 = $2 + 50
-            start2 = $3 - 50; end2 = $3
-            
-            # Clip to chromosome boundaries
-            if(start1 < 0) start1 = 0
-            if(end1 > chrsize[$1]) end1 = chrsize[$1]
-            if(start2 < 0) start2 = 0  
-            if(end2 > chrsize[$1]) end2 = chrsize[$1]
-            
-            # Only output if coordinates are valid
-            if(start1 < end1) print $1, start1, end1, $4, ".", "+"
-            if(start2 < end2) print $1, start2, end2, $4, ".", "-"
-        }' | \
-        sort -k1,1 -k2,2n | \
-        gzip > "$OUTPUT_DIR/${SAMPLE}_reads.bed.gz"
-fi
+            {
+                # Skip mitochondrial reads
+                if($1 == "chrM") next
+                
+                # Generate reads from fragment ends
+                start1 = $2; end1 = $2 + 50
+                start2 = $3 - 50; end2 = $3
+                
+                # Clip to chromosome boundaries
+                if(start1 < 0) start1 = 0
+                if(end1 > chrsize[$1]) end1 = chrsize[$1]
+                if(start2 < 0) start2 = 0
+                if(end2 > chrsize[$1]) end2 = chrsize[$1]
+                
+                # Only output if coordinates are valid
+                if(start1 < end1) print $1, start1, end1, $4, ".", "+"
+                if(start2 < end2) print $1, start2, end2, $4, ".", "-"
+            }' | \
+            sort -k1,1 -k2,2n | \
+            gzip > "$OUTPUT_DIR/${SAMPLE}_reads.bed.gz"
+    fi
 
-if [[ $? -eq 0 ]]; then
-    echo "DEBUG: Reads file created successfully"
-    echo "DEBUG: Number of reads: $(zcat "$OUTPUT_DIR/${SAMPLE}_reads.bed.gz" | wc -l)"
+    if [[ $? -eq 0 ]]; then
+        echo "DEBUG: Reads file created successfully"
+        echo "DEBUG: Number of reads: $(zcat "$OUTPUT_DIR/${SAMPLE}_reads.bed.gz" | wc -l)"
+    else
+        echo "ERROR: Failed to create reads file"
+        exit 1
+    fi
+
+    # Call peaks
+    echo "DEBUG: Checking for MACS2..."
+    if ! command -v macs2 &> /dev/null; then
+        echo "ERROR: MACS2 not found. Please install MACS2 for peak calling"
+        echo "DEBUG: You can install with: pip install MACS2"
+        exit 1
+    fi
+
+    echo "DEBUG: Running MACS2 peak calling..."
+    macs2 callpeak \
+        -t "$OUTPUT_DIR/${SAMPLE}_reads.bed.gz" \
+        -g mm -f BED -q 0.01 \
+        --nomodel --shift -100 --extsize 200 \
+        --keep-dup all \
+        -B --SPMR \
+        --outdir "$OUTPUT_DIR/peaks" \
+        -n "${SAMPLE}"
 else
-    echo "ERROR: Failed to create reads file"
-    exit 1
+    echo "DEBUG: Skipping MACS2 peak calling, peaks file already exists."
 fi
-
-# Call peaks
-echo "DEBUG: Checking for MACS2..."
-if ! command -v macs2 &> /dev/null; then
-    echo "ERROR: MACS2 not found. Please install MACS2 for peak calling"
-    echo "DEBUG: You can install with: pip install MACS2"
-    exit 1
-fi
-
-echo "DEBUG: Running MACS2 peak calling..."
-macs2 callpeak \
-    -t "$OUTPUT_DIR/${SAMPLE}_reads.bed.gz" \
-    -g mm -f BED -q 0.01 \
-    --nomodel --shift -100 --extsize 200 \
-    --keep-dup all \
-    -B --SPMR \
-    --outdir "$OUTPUT_DIR/peaks" \
-    -n "${SAMPLE}"
 
 MACS2_EXIT_CODE=$?
 if [[ $MACS2_EXIT_CODE -ne 0 ]]; then
@@ -504,23 +519,27 @@ echo ""
 echo "DEBUG: Step 7 - Generating peak-by-cell matrix..."
 
 # Sort peaks
-cut -f 1-4 "$OUTPUT_DIR/peaks/${SAMPLE}_peaks.narrowPeak" | \
-    sort -k1,1 -k2,2n > "$OUTPUT_DIR/peaks/${SAMPLE}_peaks_sorted.bed"
+if [[ ! -f "$OUTPUT_DIR/${SAMPLE}_peak_read_ov.tsv.gz" ]]; then
+    cut -f 1-4 "$OUTPUT_DIR/peaks/${SAMPLE}_peaks.narrowPeak" | \
+        sort -k1,1 -k2,2n > "$OUTPUT_DIR/peaks/${SAMPLE}_peaks_sorted.bed"
 
-# Find reads in peaks per cell
-echo "DEBUG: Checking for bedtools..."
-if ! command -v bedtools &> /dev/null; then
-    echo "ERROR: bedtools not found. Please install bedtools"
-    exit 1
+    # Find reads in peaks per cell
+    echo "DEBUG: Checking for bedtools..."
+    if ! command -v bedtools &> /dev/null; then
+        echo "ERROR: bedtools not found. Please install bedtools"
+        exit 1
+    fi
+
+    bedtools intersect \
+        -a "$OUTPUT_DIR/peaks/${SAMPLE}_peaks_sorted.bed" \
+        -b "$OUTPUT_DIR/${SAMPLE}_reads.bed.gz" \
+        -wo -sorted -g "$OUTPUT_DIR/qc/genome.chrom.sizes" | \
+        sort -k8,8 | \
+        bedtools groupby -g 8 -c 4 -o freqdesc | \
+        gzip > "$OUTPUT_DIR/${SAMPLE}_peak_read_ov.tsv.gz"
+else
+    echo "DEBUG: Skipping peak-by-cell matrix generation, file already exists."
 fi
-
-bedtools intersect \
-    -a "$OUTPUT_DIR/peaks/${SAMPLE}_peaks_sorted.bed" \
-    -b "$OUTPUT_DIR/${SAMPLE}_reads.bed.gz" \
-    -wo -sorted -g "$OUTPUT_DIR/qc/genome.chrom.sizes" | \
-    sort -k8,8 | \
-    bedtools groupby -g 8 -c 4 -o freqdesc | \
-    gzip > "$OUTPUT_DIR/${SAMPLE}_peak_read_ov.tsv.gz"
 
 # Create matrix files
 mkdir -p "$OUTPUT_DIR/${SAMPLE}_peak_bc_matrix"
