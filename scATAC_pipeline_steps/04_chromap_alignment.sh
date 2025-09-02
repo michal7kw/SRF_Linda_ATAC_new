@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=chromap_align
-#SBATCH --output=logs/chromap_align_%A_%a.out
-#SBATCH --error=logs/chromap_align_%A_%a.err
+#SBATCH --output=logs/04_chromap_align_%a.out
+#SBATCH --error=logs/04_chromap_align_%a.err
 #SBATCH --array=0-1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=128G

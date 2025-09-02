@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=test_barcodes
-#SBATCH --output=logs/test_barcodes_%A_%a.out
-#SBATCH --error=logs/test_barcodes_%A_%a.err
+#SBATCH --output=logs/02_test_barcodes_%a.out
+#SBATCH --error=logs/02_test_barcodes_%a.err
 #SBATCH --array=0-1
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=16G

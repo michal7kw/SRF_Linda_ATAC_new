@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=validate_counts
-#SBATCH --output=logs/validate_counts_%A_%a.out
-#SBATCH --error=logs/validate_counts_%A_%a.err
+#SBATCH --output=logs/03_validate_counts_%a.out
+#SBATCH --error=logs/03_validate_counts_%a.err
 #SBATCH --array=0-1
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=16G

@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=call_peaks
-#SBATCH --output=logs/call_peaks_%A_%a.out
-#SBATCH --error=logs/call_peaks_%A_%a.err
+#SBATCH --output=logs/05_call_peaks_%a.out
+#SBATCH --error=logs/05_call_peaks_%a.err
 #SBATCH --array=0-1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
@@ -10,7 +10,7 @@
 
 # Set up conda environment
 source /opt/common/tools/ric.cosr/miniconda3/bin/activate
-conda activate alignment_two
+conda activate macs2_env
 
 set -euo pipefail
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=peak_cell_matrix
-#SBATCH --output=logs/peak_cell_matrix_%A_%a.out
-#SBATCH --error=logs/peak_cell_matrix_%A_%a.err
+#SBATCH --output=logs/06_peak_cell_matrix_%a.out
+#SBATCH --error=logs/06_peak_cell_matrix_%a.err
 #SBATCH --array=0-1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=32G
@@ -10,7 +10,7 @@
 
 # Set up conda environment
 source /opt/common/tools/ric.cosr/miniconda3/bin/activate
-conda activate alignment_two
+conda activate macs2_env
 
 set -euo pipefail
 
