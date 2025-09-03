@@ -10,7 +10,7 @@
 
 # Set up conda environment
 source /opt/common/tools/ric.cosr/miniconda3/bin/activate
-conda activate macs2_env
+conda activate peak_calling_new
 
 set -euo pipefail
 
@@ -59,58 +59,22 @@ echo "DEBUG: Converting fragments to reads for peak calling..."
 
 if [[ ! -f "$OUTPUT_DIR/peaks/${SAMPLE}_peaks.narrowPeak" ]]; then
     # Check if bedClip is available
-    if command -v bedClip &> /dev/null; then
-        echo "DEBUG: Using bedClip for coordinate clipping"
-        zcat "$FRAGMENTS_FILE" | \
-            awk 'BEGIN{OFS="\t"}{
-                print $1, $2, $2+50, $4, ".", "+"
-                print $1, $3-50, $3, $4, ".", "-"
-            }' | \
-            sed '/chrM/d' | \
-            bedClip stdin "$OUTPUT_DIR/qc/genome.chrom.sizes" stdout | \
-            sort -k1,1 -k2,2n | \
-            gzip > "$OUTPUT_DIR/${SAMPLE}_reads.bed.gz"
-    else
-        echo "DEBUG: bedClip not found, using alternative coordinate clipping"
-        # Alternative method using awk to clip coordinates
-        zcat "$FRAGMENTS_FILE" | \
-            awk -v sizefile="$OUTPUT_DIR/qc/genome.chrom.sizes" '
-            BEGIN {
-                OFS="\t"
-                # Load chromosome sizes
-                while((getline line < sizefile) > 0) {
-                    split(line, a, "\t")
-                    chrsize[a[1]] = a[2]
-                }
-                close(sizefile)
-            }
-            {
-                # Skip mitochondrial reads
-                if($1 == "chrM") next
-                
-                # Generate reads from fragment ends
-                start1 = $2; end1 = $2 + 50
-                start2 = $3 - 50; end2 = $3
-                
-                # Clip to chromosome boundaries
-                if(start1 < 0) start1 = 0
-                if(end1 > chrsize[$1]) end1 = chrsize[$1]
-                if(start2 < 0) start2 = 0
-                if(end2 > chrsize[$1]) end2 = chrsize[$1]
-                
-                # Only output if coordinates are valid
-                if(start1 < end1) print $1, start1, end1, $4, ".", "+"
-                if(start2 < end2) print $1, start2, end2, $4, ".", "-"
-            }' | \
-            sort -k1,1 -k2,2n | \
-            gzip > "$OUTPUT_DIR/${SAMPLE}_reads.bed.gz"
-    fi
+    # A more robust way to generate reads from fragments, avoiding complex awk scripts
+    echo "DEBUG: Generating reads from fragment ends..."
+    zcat "$FRAGMENTS_FILE" | \
+        grep -v "^chrM" | \
+        awk 'BEGIN{OFS="\t"} {print $1, $2, $2+1; print $1, $3-1, $3}' | \
+        sort -k1,1 -k2,2n | \
+        gzip > "$OUTPUT_DIR/${SAMPLE}_reads.bed.gz"
 
-    if [[ $? -eq 0 ]]; then
+    READ_COUNT=$(zcat "$OUTPUT_DIR/${SAMPLE}_reads.bed.gz" | wc -l)
+
+    if [[ $? -eq 0 && $READ_COUNT -gt 0 ]]; then
         echo "DEBUG: Reads file created successfully"
-        echo "DEBUG: Number of reads: $(zcat "$OUTPUT_DIR/${SAMPLE}_reads.bed.gz" | wc -l)"
+        echo "DEBUG: Number of reads: $(printf "%'d" $READ_COUNT)"
     else
-        echo "ERROR: Failed to create reads file"
+        echo "ERROR: Failed to create reads file or the file is empty"
+        echo "DEBUG: Read count: $READ_COUNT"
         exit 1
     fi
 

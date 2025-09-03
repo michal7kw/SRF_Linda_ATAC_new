@@ -10,7 +10,7 @@
 
 # Set up conda environment
 source /opt/common/tools/ric.cosr/miniconda3/bin/activate
-conda activate macs2_env
+conda activate peak_calling_new
 
 set -euo pipefail
 
@@ -60,7 +60,7 @@ if [[ ! -f "$OUTPUT_DIR/${SAMPLE}_peak_read_ov.tsv.gz" ]]; then
     
     bedtools intersect \
         -a "$PEAKS_FILE" \
-        -b "$READS_FILE" \
+        -b <(zcat "$READS_FILE" | sort -k1,1V -k2,2n) \
         -wo -sorted -g "$OUTPUT_DIR/qc/genome.chrom.sizes" | \
         sort -k8,8 | \
         bedtools groupby -g 8 -c 4 -o freqdesc | \
@@ -95,15 +95,22 @@ fi
 
 # Barcodes file
 echo "DEBUG: Creating barcodes.tsv file..."
-zcat "$OUTPUT_DIR/${SAMPLE}_peak_read_ov.tsv.gz" | \
-    cut -f 1 > "$OUTPUT_DIR/${SAMPLE}_peak_bc_matrix/barcodes.tsv"
+BARCODE_COUNT=$(zcat "$OUTPUT_DIR/${SAMPLE}_peak_read_ov.tsv.gz" | cut -f 1 | tee "$OUTPUT_DIR/${SAMPLE}_peak_bc_matrix/barcodes.tsv" | wc -l)
 
 if [[ $? -eq 0 ]]; then
-    BARCODE_COUNT=$(wc -l < "$OUTPUT_DIR/${SAMPLE}_peak_bc_matrix/barcodes.tsv")
     echo "DEBUG: barcodes.tsv created: $BARCODE_COUNT barcodes"
 else
     echo "ERROR: Failed to create barcodes.tsv"
     exit 1
+fi
+
+if [[ $BARCODE_COUNT -eq 0 ]]; then
+    echo "WARNING: No barcodes found. Skipping matrix generation."
+    echo "========================================="
+    echo "Step 6 complete for $SAMPLE (No data)"
+    echo "End time: $(date)"
+    echo "========================================="
+    exit 0
 fi
 
 # Create features.tsv file (alternative to peaks.bed for 10X compatibility)
@@ -150,7 +157,12 @@ echo "Matrix statistics:"
 echo "  Total peaks: $(printf "%'d" $TOTAL_PEAKS)"
 echo "  Total barcodes: $(printf "%'d" $TOTAL_BARCODES)"
 echo "  Matrix entries: $(printf "%'d" $TOTAL_ENTRIES)"
-echo "  Sparsity: $(echo "scale=4; (1 - $TOTAL_ENTRIES / ($TOTAL_PEAKS * $TOTAL_BARCODES)) * 100" | bc)%"
+if [[ $TOTAL_PEAKS -gt 0 && $TOTAL_BARCODES -gt 0 ]]; then
+    SPARSITY=$(echo "scale=4; (1 - $TOTAL_ENTRIES / ($TOTAL_PEAKS * $TOTAL_BARCODES)) * 100" | bc)
+    echo "  Sparsity: ${SPARSITY}%"
+else
+    echo "  Sparsity: N/A (zero peaks or barcodes)"
+fi
 
 echo "Output files created:"
 echo "  - $OUTPUT_DIR/${SAMPLE}_peak_bc_matrix/peaks.bed"
@@ -165,7 +177,11 @@ SAMPLE=$SAMPLE
 TOTAL_PEAKS=$TOTAL_PEAKS
 TOTAL_BARCODES=$TOTAL_BARCODES
 TOTAL_ENTRIES=$TOTAL_ENTRIES
-SPARSITY=$(echo "scale=4; (1 - $TOTAL_ENTRIES / ($TOTAL_PEAKS * $TOTAL_BARCODES)) * 100" | bc)%
+SPARSITY="N/A"
+if [[ $TOTAL_PEAKS -gt 0 && $TOTAL_BARCODES -gt 0 ]]; then
+    SPARSITY_VALUE=$(echo "scale=4; (1 - $TOTAL_ENTRIES / ($TOTAL_PEAKS * $TOTAL_BARCODES)) * 100" | bc)
+    SPARSITY="${SPARSITY_VALUE}%"
+fi
 MATRIX_CREATED_AT=$(date)
 INPUT_PEAKS_FILE=$PEAKS_FILE
 INPUT_READS_FILE=$READS_FILE

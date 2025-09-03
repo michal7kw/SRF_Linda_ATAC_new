@@ -10,7 +10,7 @@
 
 # Set up conda environment
 source /opt/common/tools/ric.cosr/miniconda3/bin/activate
-conda activate macs2_env
+conda activate peak_calling_new
 
 set -euo pipefail
 
