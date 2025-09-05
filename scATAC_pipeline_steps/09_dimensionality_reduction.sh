@@ -10,7 +10,7 @@
 
 # Set up conda environment
 source /opt/common/tools/ric.cosr/miniconda3/bin/activate
-conda activate alignment_two
+conda activate dm_reduce
 
 set -euo pipefail
 

@@ -26,12 +26,57 @@ echo "Step 5a: Rerunning Peak calling for $SAMPLE"
 echo "Start time: $(date)"
 echo "========================================="
 
+# Create output directories
+mkdir -p "$OUTPUT_DIR/peaks" "$OUTPUT_DIR/qc"
+
 # Check prerequisites
-READS_FILE="$OUTPUT_DIR/${SAMPLE}_reads.bed.gz"
-if [[ ! -f "$READS_FILE" ]]; then
-    echo "ERROR: Reads file not found: $READS_FILE"
-    echo "Please run step 5 (05_call_peaks.sh) first to generate the reads file."
+FRAGMENTS_FILE="$OUTPUT_DIR/fragments/${SAMPLE}_fragments.tsv.gz"
+if [[ ! -f "$FRAGMENTS_FILE" ]]; then
+    echo "ERROR: Fragments file not found: $FRAGMENTS_FILE"
+    echo "Please run step 4 (04_chromap_alignment.sh) first"
     exit 1
+fi
+
+# Generate genome sizes
+echo "DEBUG: Checking for genome sizes file..."
+if [[ ! -f "$OUTPUT_DIR/qc/genome.chrom.sizes" ]]; then
+    echo "DEBUG: Generating genome sizes file from reference index..."
+    if [[ -f "${REF_GENOME}.fai" ]]; then
+        cut -f1,2 "${REF_GENOME}.fai" > "$OUTPUT_DIR/qc/genome.chrom.sizes"
+        echo "DEBUG: Created genome sizes file: $(wc -l < "$OUTPUT_DIR/qc/genome.chrom.sizes") chromosomes"
+    else
+        echo "DEBUG: Creating reference index first..."
+        samtools faidx "$REF_GENOME"
+        cut -f1,2 "${REF_GENOME}.fai" > "$OUTPUT_DIR/qc/genome.chrom.sizes"
+        echo "DEBUG: Created genome sizes file: $(wc -l < "$OUTPUT_DIR/qc/genome.chrom.sizes") chromosomes"
+    fi
+else
+    echo "DEBUG: Genome sizes file already exists: $(wc -l < "$OUTPUT_DIR/qc/genome.chrom.sizes") chromosomes"
+fi
+
+# Convert fragments to reads for peak calling
+echo "DEBUG: Converting fragments to reads for peak calling..."
+READS_FILE="$OUTPUT_DIR/${SAMPLE}_reads.bed.gz"
+
+if [[ ! -s "$READS_FILE" ]]; then
+    echo "DEBUG: Reads file not found or is empty. Generating from fragment ends..."
+    zcat "$FRAGMENTS_FILE" | \
+        grep -v "^chrM" | \
+        awk 'BEGIN{OFS="\t"} {print $1, $2, $2+1, $4; print $1, $3-1, $3, $4}' | \
+        sort -k1,1V -k2,2n | \
+        gzip > "$READS_FILE"
+
+    READ_COUNT=$(zcat "$READS_FILE" | wc -l)
+    if [[ $? -eq 0 && $READ_COUNT -gt 0 ]]; then
+        echo "DEBUG: Reads file created successfully"
+        echo "DEBUG: Number of reads: $(printf "%d" $READ_COUNT)"
+    else
+        echo "ERROR: Failed to create reads file or the file is empty"
+        echo "DEBUG: Read count: $READ_COUNT"
+        exit 1
+    fi
+else
+    echo "DEBUG: Reads file already exists, skipping generation."
 fi
 
 # Call peaks
@@ -44,6 +89,14 @@ fi
 
 echo "DEBUG: MACS2 found: $(which macs2)"
 echo "DEBUG: MACS2 version: $(macs2 --version 2>&1 || echo 'Version check failed')"
+
+# Clean up previous run before rerunning
+rm -f "$OUTPUT_DIR/peaks/${SAMPLE}_peaks.narrowPeak" \
+      "$OUTPUT_DIR/peaks/${SAMPLE}_peaks_sorted.bed" \
+      "$OUTPUT_DIR/peaks/${SAMPLE}_summits.bed" \
+      "$OUTPUT_DIR/peaks/${SAMPLE}_control_lambda.bdg" \
+      "$OUTPUT_DIR/peaks/${SAMPLE}_treat_pileup.bdg" \
+      "$OUTPUT_DIR/peaks/${SAMPLE}_peaks.xls"
 
 echo "DEBUG: Running MACS2 peak calling..."
 macs2 callpeak \
@@ -75,10 +128,10 @@ echo "DEBUG: Number of peaks: $PEAK_COUNT"
 # Create sorted peaks file for downstream analysis
 echo "DEBUG: Creating sorted peaks file..."
 cut -f 1-4 "$OUTPUT_DIR/peaks/${SAMPLE}_peaks.narrowPeak" | \
-    sort -k1,1 -k2,2n > "$OUTPUT_DIR/peaks/${SAMPLE}_peaks_sorted.bed"
+    sort -k1,1V -k2,2n > "$OUTPUT_DIR/peaks/${SAMPLE}_peaks_sorted.bed"
 
 echo "Peak calling results:"
-echo "  Total peaks called: $(printf "%'d" $PEAK_COUNT)"
+echo "  Total peaks called: $(printf "%d" $PEAK_COUNT)"
 echo "  Peak file: $OUTPUT_DIR/peaks/${SAMPLE}_peaks.narrowPeak"
 echo "  Sorted peaks: $OUTPUT_DIR/peaks/${SAMPLE}_peaks_sorted.bed"
 
@@ -106,6 +159,6 @@ echo "Results saved to: $OUTPUT_DIR/peaks/${SAMPLE}_peak_calling_results.txt"
 
 echo "========================================="
 echo "Step 5a complete for $SAMPLE"
-echo "Called $(printf "%'d" $PEAK_COUNT) peaks"
+echo "Called $(printf "%d" $PEAK_COUNT) peaks"
 echo "End time: $(date)"
 echo "========================================="

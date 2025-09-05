@@ -136,7 +136,7 @@ if [[ ! -f "$OUTPUT_DIR/fragments/${SAMPLE}_fragments.tsv.gz" ]]; then
         -2 "$DATA_DIR/${SAMPLE}_R3_001.fastq.gz" \
         -b "$EXTRACTED_BC_FILE" \
         --barcode-whitelist "$WHITELIST" \
-        --bc-error-threshold $BC_ERROR_THRESHOLD \
+        --bc-error-threshold 2 \
         -e 5 \
         -t $THREADS \
         --low-mem \

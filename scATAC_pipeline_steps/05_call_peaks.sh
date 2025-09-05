@@ -56,29 +56,31 @@ fi
 
 # Convert fragments to reads for peak calling
 echo "DEBUG: Converting fragments to reads for peak calling..."
+READS_FILE="$OUTPUT_DIR/${SAMPLE}_reads.bed.gz"
 
-if [[ ! -f "$OUTPUT_DIR/peaks/${SAMPLE}_peaks.narrowPeak" ]]; then
-    # Check if bedClip is available
-    # A more robust way to generate reads from fragments, avoiding complex awk scripts
-    echo "DEBUG: Generating reads from fragment ends..."
+if [[ ! -s "$READS_FILE" ]]; then
+    echo "DEBUG: Reads file not found or is empty. Generating from fragment ends..."
     zcat "$FRAGMENTS_FILE" | \
         grep -v "^chrM" | \
-        awk 'BEGIN{OFS="\t"} {print $1, $2, $2+1; print $1, $3-1, $3}' | \
-        sort -k1,1 -k2,2n | \
-        gzip > "$OUTPUT_DIR/${SAMPLE}_reads.bed.gz"
+        awk 'BEGIN{OFS="\t"} {print $1, $2, $2+1, $4; print $1, $3-1, $3, $4}' | \
+        sort -k1,1V -k2,2n | \
+        gzip > "$READS_FILE"
 
-    READ_COUNT=$(zcat "$OUTPUT_DIR/${SAMPLE}_reads.bed.gz" | wc -l)
-
+    READ_COUNT=$(zcat "$READS_FILE" | wc -l)
     if [[ $? -eq 0 && $READ_COUNT -gt 0 ]]; then
         echo "DEBUG: Reads file created successfully"
-        echo "DEBUG: Number of reads: $(printf "%'d" $READ_COUNT)"
+        echo "DEBUG: Number of reads: $(printf "%d" $READ_COUNT)"
     else
         echo "ERROR: Failed to create reads file or the file is empty"
         echo "DEBUG: Read count: $READ_COUNT"
         exit 1
     fi
+else
+    echo "DEBUG: Reads file already exists, skipping generation."
+fi
 
-    # Call peaks
+# Call peaks
+if [[ ! -f "$OUTPUT_DIR/peaks/${SAMPLE}_peaks.narrowPeak" ]]; then
     echo "DEBUG: Checking for MACS2..."
     if ! command -v macs2 &> /dev/null; then
         echo "ERROR: MACS2 not found. Please install MACS2 for peak calling"
@@ -91,7 +93,7 @@ if [[ ! -f "$OUTPUT_DIR/peaks/${SAMPLE}_peaks.narrowPeak" ]]; then
 
     echo "DEBUG: Running MACS2 peak calling..."
     macs2 callpeak \
-        -t "$OUTPUT_DIR/${SAMPLE}_reads.bed.gz" \
+        -t "$READS_FILE" \
         -g mm -f BED -q 0.01 \
         --nomodel --shift -100 --extsize 200 \
         --keep-dup all \
@@ -110,6 +112,7 @@ else
     echo "DEBUG: Skipping MACS2 peak calling, peaks file already exists."
 fi
 
+
 if [[ ! -f "$OUTPUT_DIR/peaks/${SAMPLE}_peaks.narrowPeak" ]]; then
     echo "ERROR: MACS2 completed but peaks file not found"
     exit 1
@@ -125,7 +128,7 @@ cut -f 1-4 "$OUTPUT_DIR/peaks/${SAMPLE}_peaks.narrowPeak" | \
     sort -k1,1 -k2,2n > "$OUTPUT_DIR/peaks/${SAMPLE}_peaks_sorted.bed"
 
 echo "Peak calling results:"
-echo "  Total peaks called: $(printf "%'d" $PEAK_COUNT)"
+echo "  Total peaks called: $(printf "%d" $PEAK_COUNT)"
 echo "  Peak file: $OUTPUT_DIR/peaks/${SAMPLE}_peaks.narrowPeak"
 echo "  Sorted peaks: $OUTPUT_DIR/peaks/${SAMPLE}_peaks_sorted.bed"
 
@@ -153,6 +156,6 @@ echo "Results saved to: $OUTPUT_DIR/peaks/${SAMPLE}_peak_calling_results.txt"
 
 echo "========================================="
 echo "Step 5 complete for $SAMPLE"
-echo "Called $(printf "%'d" $PEAK_COUNT) peaks"
+echo "Called $(printf "%d" $PEAK_COUNT) peaks"
 echo "End time: $(date)"
 echo "========================================="

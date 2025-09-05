@@ -75,16 +75,13 @@ echo "DEBUG: Calculating TSS enrichment..."
 # Download TSS regions if not available (mouse mm10)
 TSS_FILE="$OUTPUT_DIR/qc_metrics/mm10_tss.bed"
 if [[ ! -f "$TSS_FILE" ]]; then
-    echo "DEBUG: Creating TSS regions file..."
-    # Create a simple TSS file (you may want to use a more comprehensive one)
-    cat > "$TSS_FILE" << 'EOF'
-chr1	3073252	3073254	Xkr4	0	+
-chr1	3102015	3102017	Rp1	0	+
-chr1	3205900	3205902	Sox17	0	+
-chr1	3671497	3671499	Mrpl15	0	+
-chr1	3982571	3982573	Lypla1	0	+
-EOF
-    echo "DEBUG: Note - Using minimal TSS file. For full analysis, provide comprehensive mm10 TSS annotations"
+    echo "DEBUG: Downloading comprehensive mm10 TSS file from UCSC..."
+    # Download and process RefSeq gene annotations for mm10 from UCSC
+    wget -qO- "http://hgdownload.cse.ucsc.edu/goldenPath/mm10/database/refGene.txt.gz" | \
+        gunzip -c | \
+        awk 'BEGIN{OFS="\t"} {if($4=="+"){print $3, $5-1, $5, $13, "0", $4} else {print $3, $6-1, $6, $13, "0", $4}}' | \
+        sort -k1,1 -k2,2n > "$TSS_FILE"
+    echo "DEBUG: Comprehensive TSS file created successfully."
 fi
 
 # Calculate TSS enrichment (fragments overlapping TSS +/- 2kb)
@@ -106,7 +103,7 @@ if [[ -f "$TSS_FILE" ]]; then
     # Count peaks in promoters
     PEAKS_IN_PROMOTERS=$(bedtools intersect -a "$PEAKS_FILE" -b "$OUTPUT_DIR/qc_metrics/${SAMPLE}_promoters.bed" -u | wc -l)
     TOTAL_PEAKS=$(wc -l < "$PEAKS_FILE")
-    PROMOTER_PERCENT=$(echo "scale=2; $PEAKS_IN_PROMOTERS * 100 / $TOTAL_PEAKS" | bc)
+    PROMOTER_PERCENT=$(awk -v p="$PEAKS_IN_PROMOTERS" -v t="$TOTAL_PEAKS" 'BEGIN {printf "%.2f", p/t*100}')
     
     echo "Peaks_in_promoters\t$PEAKS_IN_PROMOTERS" > "$OUTPUT_DIR/qc_metrics/${SAMPLE}_promoter_stats.txt"
     echo "Total_peaks\t$TOTAL_PEAKS" >> "$OUTPUT_DIR/qc_metrics/${SAMPLE}_promoter_stats.txt"
