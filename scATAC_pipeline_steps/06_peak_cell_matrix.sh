@@ -17,7 +17,7 @@ set -euo pipefail
 # Helper function to zcat or cat a file based on gzip status
 zcat_if_gzipped() {
     local file="$1"
-    if file "$file" | grep -q "gzip compressed"; then
+    if file "$file" 2>/dev/null | grep -q "gzip compressed"; then
         zcat "$file"
     else
         cat "$file"
@@ -53,6 +53,12 @@ if [[ ! -f "$READS_FILE" ]]; then
     exit 1
 fi
 
+if [[ ! -s "$READS_FILE" ]]; then
+    echo "ERROR: Reads file is empty: $READS_FILE"
+    echo "Please check the output of step 5 (05_call_peaks.sh)"
+    exit 1
+fi
+
 if [[ ! -f "$GENOME_SIZES" ]]; then
     echo "ERROR: Genome sizes file not found: $GENOME_SIZES"
     exit 1
@@ -81,16 +87,19 @@ echo "DEBUG: This may take several minutes for large datasets..."
 echo "DEBUG: Inspecting PEAKS_FILE ($PEAKS_FILE) head:"
 zcat_if_gzipped "$PEAKS_FILE" | head -n 5
 echo "DEBUG: Inspecting READS_FILE ($READS_FILE) head:"
-(zcat_if_gzipped "$READS_FILE" || true) | head -n 5
+zcat_if_gzipped "$READS_FILE" | head -n 5
+echo "DEBUG: Inspecting GENOME_SIZES ($GENOME_SIZES) head:"
+zcat_if_gzipped "$GENOME_SIZES" | head -n 5
 
 # The -sorted flag requires that both files are sorted by chrom, then start.
 # The reads are piped from a sort command, and the peaks file was sorted in step 5.
+echo "DEBUG: Running bedtools intersect..."
 bedtools intersect \
     -a "$PEAKS_FILE" \
     -b <(zcat_if_gzipped "$READS_FILE" | sort -k1,1 -k2,2n) \
-    -wo -sorted -g "$GENOME_SIZES" | \
-    tee "$OUTPUT_DIR/debug_${SAMPLE}_bedtools_intersect_raw.txt" | \
-    head -n 10 > "$OUTPUT_DIR/debug_${SAMPLE}_bedtools_intersect_head.txt"
+    -wo -sorted -g "$GENOME_SIZES" \
+    > "$OUTPUT_DIR/debug_${SAMPLE}_bedtools_intersect_raw.txt"
+echo "DEBUG: bedtools intersect command finished. Checking output..."
 
 # Check if bedtools intersect produced any output
 if [[ ! -s "$OUTPUT_DIR/debug_${SAMPLE}_bedtools_intersect_raw.txt" ]]; then
@@ -102,25 +111,40 @@ if [[ ! -s "$OUTPUT_DIR/debug_${SAMPLE}_bedtools_intersect_raw.txt" ]]; then
     exit 0
 fi
 
-# Continue processing if overlaps were found
-cat "$OUTPUT_DIR/debug_${SAMPLE}_bedtools_intersect_raw.txt" | \
-    awk -v OFS='\t' '{print $4, $8}' | \
-    tee "$OUTPUT_DIR/debug_${SAMPLE}_awk_output_raw.txt" | \
-    head -n 10 > "$OUTPUT_DIR/debug_${SAMPLE}_awk_output_head.txt" | \
-    sort -k1,1 -k2,2 | \
-    uniq -c | \
-    awk -v OFS='\t' '{print $2, $3, $1}' | \
-    gzip > "$PEAK_OV_FILE"
+# Process overlaps to create peak-read overlap file
+echo "DEBUG: Processing bedtools intersect output..."
+INTERSECT_OUTPUT="$OUTPUT_DIR/debug_${SAMPLE}_bedtools_intersect_raw.txt"
+TEMP_AWK_OUTPUT="$OUTPUT_DIR/debug_${SAMPLE}_awk_processed.tmp"
+TEMP_SORT_UNIQ_OUTPUT="$OUTPUT_DIR/debug_${SAMPLE}_sorted_uniq.tmp"
 
-if [[ $? -eq 0 ]]; then
-    echo "DEBUG: Peak-read overlap completed successfully"
-    echo "DEBUG: Peak-read overlap file size: $(stat -c%s "$PEAK_OV_FILE") bytes"
-    echo "DEBUG: Inspecting PEAK_OV_FILE ($PEAK_OV_FILE) head:"
-    zcat_if_gzipped "$PEAK_OV_FILE" | head -n 10
-else
-    echo "ERROR: Failed to generate peak-read overlap"
+# Step 1: Extract relevant columns
+awk -v OFS='\t' '{print $4, $8}' "$INTERSECT_OUTPUT" > "$TEMP_AWK_OUTPUT"
+if [[ $? -ne 0 ]]; then
+    echo "ERROR: Failed to extract columns from bedtools intersect output."
     exit 1
 fi
+
+# Step 2: Sort and count unique pairs
+sort -k1,1 -k2,2 "$TEMP_AWK_OUTPUT" | uniq -c > "$TEMP_SORT_UNIQ_OUTPUT"
+if [[ $? -ne 0 ]]; then
+    echo "ERROR: Failed to sort and count unique pairs."
+    exit 1
+fi
+
+# Step 3: Reformat and gzip
+awk -v OFS='\t' '{print $2, $3, $1}' "$TEMP_SORT_UNIQ_OUTPUT" | gzip > "$PEAK_OV_FILE"
+if [[ $? -ne 0 ]]; then
+    echo "ERROR: Failed to reformat and gzip peak-read overlap file."
+    exit 1
+fi
+
+# Clean up intermediate temporary files
+rm -f "$TEMP_AWK_OUTPUT" "$TEMP_SORT_UNIQ_OUTPUT"
+
+echo "DEBUG: Peak-read overlap completed successfully"
+echo "DEBUG: Peak-read overlap file size: $(stat -c%s "$PEAK_OV_FILE") bytes"
+echo "DEBUG: Inspecting PEAK_OV_FILE ($PEAK_OV_FILE) head:"
+zcat_if_gzipped "$PEAK_OV_FILE" | head -n 10
 
 # Create matrix files in 10X format
 echo "DEBUG: Creating 10X-compatible matrix files..."
@@ -128,14 +152,10 @@ MATRIX_DIR="$OUTPUT_DIR/${SAMPLE}_peak_bc_matrix"
 mkdir -p "$MATRIX_DIR"
 
 # 1. features.tsv (peaks)
-# Use the 4th column (name) from the sorted peaks file as the feature ID.
-# The second column (gene name) is the same for scATAC-seq.
-# The third column is the type.
 echo "DEBUG: Creating features.tsv file..."
 cut -f 4 "$PEAKS_FILE" | awk -v OFS='\t' '{print $1, $1, "Peaks"}' > "$MATRIX_DIR/features.tsv"
 
 # 2. barcodes.tsv
-# Extract all unique barcodes from the overlap file.
 echo "DEBUG: Creating barcodes.tsv file..."
 zcat_if_gzipped "$PEAK_OV_FILE" | cut -f 2 | sort -u > "$MATRIX_DIR/barcodes.tsv"
 
@@ -150,19 +170,11 @@ if [[ $BARCODE_COUNT -eq 0 ]]; then
 fi
 
 # 3. matrix.mtx
-# Convert the triplet file (peak_id, barcode_id, count) to an indexed MTX file.
-
 echo "DEBUG: Creating indexed matrix.mtx file..."
-
-# Create associative arrays to map IDs to 1-based indices.
-# Then process the triplets file to print out the indexed matrix.
 awk -v peak_file="$MATRIX_DIR/features.tsv" -v barcode_file="$MATRIX_DIR/barcodes.tsv" '
     BEGIN {OFS="\t"}
-    # Read features into map
     FILENAME==peak_file {peak_map[$1] = FNR; next}
-    # Read barcodes into map
     FILENAME==barcode_file {barcode_map[$1] = FNR; next}
-    # Process triplets and print indexed matrix
     {
         peak_id = $1
         barcode_id = $2
@@ -173,7 +185,6 @@ awk -v peak_file="$MATRIX_DIR/features.tsv" -v barcode_file="$MATRIX_DIR/barcode
             print peak_idx, barcode_idx, count
         }
     }' "$MATRIX_DIR/features.tsv" "$MATRIX_DIR/barcodes.tsv" <(zcat_if_gzipped "$PEAK_OV_FILE") > "$MATRIX_DIR/matrix.mtx.tmp"
-
 
 TOTAL_PEAKS=$(wc -l < "$MATRIX_DIR/features.tsv")
 TOTAL_BARCODES=$(wc -l < "$MATRIX_DIR/barcodes.tsv")

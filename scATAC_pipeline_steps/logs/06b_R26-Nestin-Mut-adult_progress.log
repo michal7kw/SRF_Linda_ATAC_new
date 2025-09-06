@@ -1,0 +1,74 @@
+[PROGRESS 09:34:54] [validation] 0% complete
+[INFO 09:34:54] Validating prerequisites for sample: R26-Nestin-Mut-adult
+[INFO 09:34:54] Sorted peaks file validated: /beegfs/scratch/ric.sessa/kubacki.michal/SRF_Linda/ATAC_data/chromap_final_output/peaks/R26-Nestin-Mut-adult_peaks_sorted.bed (14240594 bytes)
+[INFO 09:34:54] Reads file validated: /beegfs/scratch/ric.sessa/kubacki.michal/SRF_Linda/ATAC_data/chromap_final_output/R26-Nestin-Mut-adult_reads.bed.gz (1240972469 bytes)
+[INFO 09:34:54] Genome sizes file validated: /beegfs/scratch/ric.sessa/kubacki.michal/SRF_Linda/ATAC_data/chromap_final_output/qc/genome.chrom.sizes (1405 bytes)
+[INFO 09:34:54] Previous matrix directory exists, will be overwritten: /beegfs/scratch/ric.sessa/kubacki.michal/SRF_Linda/ATAC_data/chromap_final_output/R26-Nestin-Mut-adult_peak_bc_matrix
+[INFO 09:34:54] All prerequisites validated successfully
+[PROGRESS 09:34:54] [validation] 100% complete
+[INFO 09:34:54] Dataset estimation:
+[INFO 09:34:54]   Peak count: 252,072
+[INFO 09:34:54]   Reads file size: 1.2GiB
+[INFO 09:34:54]   Estimated overlap records: 3,128,144
+[PROGRESS 09:34:54] [overall] 10% complete
+[INFO 09:34:54] Starting bedtools intersect analysis...
+[PROGRESS 09:34:54] [bedtools_intersect] 0% complete
+[INFO 09:35:24] Bedtools progress: 0 overlaps found
+[INFO 09:35:54] Bedtools progress: 0 overlaps found
+[INFO 09:36:24] Bedtools progress: 0 overlaps found
+[INFO 09:36:54] Bedtools progress: 0 overlaps found
+[INFO 09:37:25] Bedtools progress: 0 overlaps found
+[INFO 09:37:55] Bedtools progress: 0 overlaps found
+[INFO 09:38:25] Bedtools progress: 0 overlaps found
+[INFO 09:38:55] Bedtools progress: 0 overlaps found
+[INFO 09:39:25] Bedtools progress: 0 overlaps found
+[INFO 09:39:55] Bedtools progress: 0 overlaps found
+[INFO 09:40:26] Bedtools progress: 0 overlaps found
+[INFO 09:40:56] Bedtools progress: 0 overlaps found
+[INFO 09:41:26] Bedtools progress: 0 overlaps found
+[INFO 09:41:56] Bedtools progress: 0 overlaps found
+[INFO 09:42:26] Bedtools progress: 0 overlaps found
+[INFO 09:42:56] Bedtools progress: 0 overlaps found
+[INFO 09:43:26] Bedtools progress: 0 overlaps found
+[INFO 09:43:56] Bedtools progress: 0 overlaps found
+[INFO 09:44:26] Bedtools progress: 0 overlaps found
+[INFO 09:44:56] Bedtools progress: 0 overlaps found
+[INFO 09:45:27] Bedtools progress: 0 overlaps found
+[INFO 09:45:57] Bedtools progress: 0 overlaps found
+[INFO 09:46:27] Bedtools progress: 0 overlaps found
+[INFO 09:46:57] Bedtools progress: 0 overlaps found
+[INFO 09:47:27] Bedtools progress: 0 overlaps found
+[INFO 09:47:58] Bedtools progress: 0 overlaps found
+[INFO 09:48:28] Bedtools progress: 0 overlaps found
+[INFO 09:48:58] Bedtools progress: 0 overlaps found
+[INFO 09:49:28] Bedtools progress: 0 overlaps found
+[INFO 09:49:58] Bedtools progress: 0 overlaps found
+[INFO 09:50:29] Bedtools progress: 0 overlaps found
+[INFO 09:50:59] Bedtools progress: 0 overlaps found
+[INFO 09:51:29] Bedtools progress: 0 overlaps found
+[INFO 09:51:59] Bedtools progress: 0 overlaps found
+[INFO 09:52:29] Bedtools progress: 0 overlaps found
+[INFO 09:52:59] Bedtools progress: 0 overlaps found
+[INFO 09:53:29] Bedtools progress: 0 overlaps found
+[INFO 09:53:59] Bedtools progress: 0 overlaps found
+[INFO 09:54:29] Bedtools progress: 0 overlaps found
+[INFO 09:55:00] Bedtools progress: 0 overlaps found
+[INFO 09:55:30] Bedtools progress: 0 overlaps found
+[INFO 09:56:00] Bedtools progress: 0 overlaps found
+[INFO 09:56:30] Bedtools progress: 0 overlaps found
+[INFO 09:57:00] Bedtools progress: 0 overlaps found
+[INFO 09:57:30] Bedtools progress: 0 overlaps found
+[INFO 09:58:00] Bedtools progress: 0 overlaps found
+[INFO 09:58:30] Bedtools progress: 0 overlaps found
+[INFO 09:59:00] Bedtools progress: 1,849,016 overlaps found
+[INFO 09:59:31] Bedtools progress: 23,422,552 overlaps found
+[INFO 10:00:02] Bedtools progress: 45,880,981 overlaps found
+[INFO 10:00:33] Bedtools progress: 67,889,372 overlaps found
+[INFO 10:01:05] Bedtools progress: 89,755,528 overlaps found
+[INFO 10:01:37] Bedtools progress: 109,107,511 overlaps found
+[INFO 10:02:09] Bedtools progress: 132,653,987 overlaps found
+[INFO 10:02:42] Bedtools progress: 156,242,800 overlaps found
+[INFO 10:03:15] Bedtools progress: 179,014,856 overlaps found
+[INFO 10:03:49] Bedtools progress: 191,904,405 overlaps found
+[INFO 10:04:23] Bedtools progress: 194,968,758 overlaps found
+[ERROR 10:04:23] Bedtools intersect failed with exit code: 1
